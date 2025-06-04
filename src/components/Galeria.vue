@@ -94,14 +94,66 @@
                 <p><strong>Año:</strong> {{ cuadroSeleccionado.anio }}</p>
                 <p><strong>Precio:</strong> €{{ cuadroSeleccionado.precio.toLocaleString() }}</p>
                 <p class="mt-3">{{ cuadroSeleccionado.descripcion }}</p>
+
+                 <!-- Formulario de compra (solo visible al hacer clic en comprar) -->
+                  <div v-if="mostrarFormularioCompra" class="mt-4 p-3 bg-light rounded">
+                     <h6 class="mb-3">Complete sus datos</h6>
+                     <div class="mb-3">
+                      <input type="text" class="form-control" placeholder="Nombre completo" v-model="datosCompra.nombre">
+                    </div>
+                    <div class="mb-3">
+                      <input type="email" class="form-control" placeholder="Email" v-model="datosCompra.email">
+                    </div>
+                    <div class="mb-3">
+                      <input type="tel" class="form-control" placeholder="Teléfono" v-model="datosCompra.telefono">
+                    </div>
+                    <button class="btn btn-success w-100" @click="confirmarCompra">
+                      <i class="bi bi-check-circle"></i> Confirmar compra
+                    </button>
+                  </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-success">
-              <i class="bi bi-cart"></i> Comprar
+            <button 
+              type="button" 
+              class="btn btn-success"
+              @click="iniciarProcesoCompra"
+              v-if="!mostrarFormularioCompra"
+            >
+              <i class="bi bi-cart"></i> Comprar Obra
             </button>
+            <!-- Botón alternativo de WhatsApp -->
+            <a 
+              v-if="!mostrarFormularioCompra"
+              :href="enlaceWhatsApp" 
+              class="btn btn-success"
+              target="_blank"
+              @click="registrarInteresWhatsApp"
+            >
+              <i class="bi bi-whatsapp"></i> Consultar por WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Modal de confirmación -->
+    <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">¡Compra realizada!</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Gracias por su compra, {{ datosCompra.nombre }}.</p>
+            <p>Hemos enviado los detalles de su compra de "<strong>{{ cuadroSeleccionado.titulo }}</strong>" al email {{ datosCompra.email }}.</p>
+            <p class="mb-0">Nos pondremos en contacto con usted para coordinar el envío.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
           </div>
         </div>
       </div>
@@ -204,7 +256,15 @@ export default {
           descripcion: "Detallado estudio botánico de especies autóctonas."
         }
       ],
-      heroBg: heroBg
+      heroBg: heroBg,
+      mostrarFormularioCompra: false,
+      datosCompra: {
+        nombre: '',
+        email: '',
+        telefono: ''
+      },
+      //whatsappNumber: '56767284', 
+      //whatsappMessage: 'Hola, estoy interesado en la obra'
     }
   },
   mounted() {
@@ -232,7 +292,11 @@ export default {
       }
       
       return filtrados;
-    }
+    },
+    //enlaceWhatsApp() {
+      //const mensaje = encodeURIComponent(`${this.whatsappMessage} "${this.cuadroSeleccionado.titulo}" (Ref: ${this.cuadroSeleccionado.id || this.cuadroSeleccionado.titulo.replace(/\s+/g, '-')})`);
+      //return `https://https://web.whatsapp.com//${this.whatsappNumber}?text=${mensaje}`;
+    //}
   },
   methods: {
     filtrarPorTecnica(tecnica) {
@@ -245,6 +309,37 @@ export default {
         const modal = Modal.getOrCreateInstance(modalElement);
         modal.show();
       }
+    },
+    iniciarProcesoCompra() {
+      this.mostrarFormularioCompra = true;
+    },
+    confirmarCompra() {
+      // Validación básica
+      if (!this.datosCompra.nombre || !this.datosCompra.email || !this.datosCompra.telefono) {
+        alert('Por favor complete todos los campos');
+        return;
+      }
+
+      // Aquí iría la lógica para enviar los datos al backend
+      console.log('Datos de compra:', {
+        obra: this.cuadroSeleccionado,
+        comprador: this.datosCompra
+      });
+      // Mostrar modal de confirmación
+      const modalConfirmacion = new Modal(document.getElementById('modalConfirmacion'));
+      modalConfirmacion.show();
+
+      // Cerrar el modal de detalle
+      const modalDetalle = Modal.getInstance(document.getElementById('modalDetalle'));
+      if (modalDetalle) modalDetalle.hide();
+
+      // Resetear el formulario
+      this.mostrarFormularioCompra = false;
+      this.datosCompra = { nombre: '', email: '', telefono: '' };
+    },
+    registrarInteresWhatsApp() {
+      // Puedes registrar el interés en analytics o tu backend
+      console.log('Interés registrado por WhatsApp:', this.cuadroSeleccionado.titulo);
     }
   }
 }
@@ -302,5 +397,31 @@ export default {
 .bi-youtube:hover { color: #ff0000; }
 .bi-twitter-x:hover { color: #000000; }
 .bi-whatsapp:hover { color: #25d366; }
+
+/* Estilos adicionales para el proceso de compra */
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+  transform: translateY(-2px);
+}
+
+.bg-light {
+  background-color: #f8f9fa!important;
+}
+
+/* Estilos para el modal de confirmación */
+.modal-header.bg-success {
+  background-color: #28a745!important;
+}
+
+.btn-close-white {
+  filter: invert(1);
+}
 
 </style>
