@@ -1,173 +1,192 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-custom">
-    <div class="container">
-      <!-- Logo o nombre del sitio -->
-      <router-link to="/" class="navbar-brand">
-        <span class="logo-text">Galería Jardinez</span>
-        <span class="logo-subtext">Arte Contemporáneo</span>
+  <nav class="navbar-custom">
+    <!-- Menú lateral permanente -->
+    <div class="side-menu">
+      <!-- Logo compacto que muestra nombre completo al expandir -->
+      <router-link to="/" class="menu-logo">
+        <span class="logo-compact">GJ</span>
+        <span class="logo-full">Galería Jardinez</span>
       </router-link>
-
-      <!-- Botón para móviles -->
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Menú de navegación -->
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <router-link to="/" class="nav-link" active-class="active">
-              <i class="bi bi-house-door"></i> Inicio
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/galeria" class="nav-link" active-class="active">
-              <i class="bi bi-images"></i> Galería
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/exposiciones" class="nav-link" active-class="active">
-              <i class="bi bi-calendar-event"></i> Exposiciones
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/artistas" class="nav-link" active-class="active">
-              <i class="bi bi-palette"></i> Artistas
-            </router-link>
-          </li>
-        </ul>
-      </div>
+      
+      <!-- Items del menú con iconos y texto -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <router-link to="/" class="nav-link" active-class="active">
+            <i class="bi bi-house-door"></i>
+            <span class="nav-text">Inicio</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/galeria" class="nav-link" active-class="active">
+            <i class="bi bi-images"></i>
+            <span class="nav-text">Galería</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/exposiciones" class="nav-link" active-class="active">
+            <i class="bi bi-calendar-event"></i>
+            <span class="nav-text">Exposiciones</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/artistas" class="nav-link" active-class="active">
+            <i class="bi bi-palette"></i>
+            <span class="nav-text">Artistas</span>
+          </router-link>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>
 
 <script>
 export default {
-  name: "NavbarComponent",
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll);
-  },
-  beforeUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-  methods: {
-    handleScroll() {
-      const navbar = this.$el; // Usamos la referencia al elemento raíz del componente
-      if (navbar) {
-        if (window.scrollY > 50) {
-          navbar.classList.add('scrolled');
-        } else {
-          navbar.classList.remove('scrolled');
-        }
-      }
-    }
-  }
+  name: "NavbarComponent"
 };
 </script>
 
 <style scoped>
+/* Estructura base del navbar lateral */
 .navbar-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1030;
+}
+
+/* Menú lateral compacto */
+.side-menu {
+  width: 70px;
+  height: 100%;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
-  padding: 0.8rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-}
-
-.navbar-custom.scrolled {
-  background: rgba(0, 0, 0, 0.95);
-  padding: 0.5rem 0;
-}
-
-.navbar-brand {
+  padding: 20px 0;
   display: flex;
   flex-direction: column;
-  font-family: 'Playfair Display', serif;
-  padding: 0.5rem 0;
+  align-items: center;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 1px;
+.side-menu:hover {
+  width: 220px;
+  align-items: flex-start;
+  padding-left: 15px;
 }
 
-.logo-subtext {
-  font-size: 0.7rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.nav-link {
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8) !important;
-  margin: 0 0.5rem;
-  padding: 0.8rem 1rem !important;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+/* Logo compacto con efecto expandible */
+.menu-logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 15px;
+  color: white;
+  text-decoration: none;
+  margin-bottom: 30px;
+  padding: 8px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
 }
 
-.nav-link:hover, .nav-link:focus {
-  color: #fff !important;
+.logo-compact {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
-.nav-link.active {
-  color: #fff !important;
+.logo-full {
+  font-family: 'Playfair Display', serif;
   font-weight: 600;
+  font-size: 1.1rem;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.2s ease 0.1s;
+}
+
+.side-menu:hover .logo-full {
+  opacity: 1;
+}
+
+.menu-logo:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.navbar-toggler {
-  border: none;
-  padding: 0.5rem;
+.menu-logo:hover .logo-compact {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
 }
 
-.navbar-toggler:focus {
-  box-shadow: none;
+/* Items del menú */
+.navbar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 0 10px;
 }
 
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000px' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+.nav-link {
+  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 10px !important;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  width: 100%;
 }
 
+.nav-link:hover,
+.nav-link.active {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.15);
+}
 
-/* Responsive */
-@media (max-width: 992px) {
-  .navbar-collapse {
-    background: rgba(0, 0, 0, 0.95);
-    padding: 1rem;
-    margin-top: 0.5rem;
-    border-radius: 8px;
+.nav-link i {
+  font-size: 1.2rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+.nav-text {
+  opacity: 0;
+  transition: opacity 0.2s ease 0.1s;
+}
+
+.side-menu:hover .nav-text {
+  opacity: 1;
+}
+
+/* Efectos responsive */
+@media (max-width: 768px) {
+  .side-menu {
+    width: 60px;
+  }
+  
+  .side-menu:hover {
+    width: 200px;
+  }
+  
+  .logo-full {
+    font-size: 1rem;
   }
   
   .nav-link {
-    margin: 0.2rem 0;
-    padding: 0.8rem !important;
-  }
-}
-
-@media (max-width: 576px) {
-  .logo-text {
-    font-size: 1.3rem;
+    padding: 8px !important;
+    gap: 12px;
   }
   
-  .logo-subtext {
-    font-size: 0.6rem;
+  .nav-link i {
+    font-size: 1rem;
   }
 }
 </style>
